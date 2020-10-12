@@ -1,0 +1,14 @@
+version: '3'
+services:
+    eclipse-mosquitto:
+        image: eclipse-mosquitto:latest
+        container_name: mqtt
+        ports:
+            - "1883:1883"
+        restart: always
+
+    influxdb:
+        image: influxdb:latest
+        container_name: influxdb
+        ports:
+            - "8083:8083"
