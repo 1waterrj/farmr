@@ -1,2 +1,2 @@
 # farmr
-An IoT application for farming
+An IoT application for growing
