@@ -12,3 +12,8 @@ services:
         container_name: influxdb
         ports:
             - "8083:8083"
+
+    bridge:
+        build: ./bridge/ 
+        container_name: bridge
+        command: python bridge.py
