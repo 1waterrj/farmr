@@ -1,19 +1,26 @@
 version: '3'
 services:
-    eclipse-mosquitto:
+    mosquitto:
         image: eclipse-mosquitto:latest
         container_name: mqtt
         ports:
             - "1883:1883"
         restart: always
 
-    influxdb:
-        image: influxdb:latest
-        container_name: influxdb
+    postgres:
+        image: "postgres:11-alpine"
+        container_name: farmr-postgres
         ports:
-            - "8083:8083"
+            - "5432:5432"
+        environment:
+            POSTGRES_DB: farmr
+            POSTGRES_USER: farmr
+            POSTGRES_PASSWORD: hotfarmr69
 
-    bridge:
-        build: ./bridge/ 
-        container_name: bridge
-        command: python bridge.py
+    # bridge:
+    #     build: ./bridge/
+    #     container_name: bridge
+    #     depends_on:
+    #         - influxdb
+    #         - postgres
+    #     command: python bridge.py

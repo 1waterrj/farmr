@@ -5,12 +5,15 @@ This script receives MQTT data and saves those to InfluxDB.
 """
 
 import re
+import time
 from typing import NamedTuple
 
 import paho.mqtt.client as mqtt
 from influxdb import InfluxDBClient
 
-INFLUXDB_ADDRESS = "http://localhost"
+time.sleep(5)
+
+INFLUXDB_ADDRESS = "influxdb"
 INFLUXDB_USER = "root"
 INFLUXDB_PASSWORD = "root"
 INFLUXDB_DATABASE = "home_db"
