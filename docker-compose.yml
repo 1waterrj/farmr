@@ -17,6 +17,24 @@ services:
             POSTGRES_USER: farmr
             POSTGRES_PASSWORD: hotfarmr69
 
+    api:
+        build: ./flask/
+        container_name: farmer-api
+        volumes:
+        - "./flask:/app"
+        depends_on:
+        - postgres
+        ports:
+        - "5000:5000"
+        environment:
+        - FLASK_ENV=development
+        - DATABASE_URL=postgresql://orderwrite:orderwrite@postgres/orderwrite
+        command: >
+            bash -c "flask drop &&
+                    flask db upgrade &&
+                    flask seed &&
+                    flask run --reload --host=0.0.0.0"
+
     # bridge:
     #     build: ./bridge/
     #     container_name: bridge
