@@ -9,32 +9,42 @@ services:
 
     postgres:
         image: "postgres:11-alpine"
-        container_name: farmr-postgres
+        container_name: postgres
+        restart: always
         ports:
             - "5432:5432"
         environment:
             POSTGRES_DB: farmr
             POSTGRES_USER: farmr
-            POSTGRES_PASSWORD: hotfarmr69
+            POSTGRES_PASSWORD: farmr
+        volumes:
+            - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
 
     api:
-        build: ./flask/
-        container_name: farmer-api
+        build: ./farmr-api/
+        container_name: farmr-api
         volumes:
-        - "./flask:/app"
+        - "./farmr-api:/app"
         depends_on:
         - postgres
         ports:
         - "5000:5000"
         environment:
-        - FLASK_ENV=development
-        - DATABASE_URL=postgresql://orderwrite:orderwrite@postgres/orderwrite
-        command: >
-            bash -c "flask drop &&
-                    flask db upgrade &&
-                    flask seed &&
-                    flask run --reload --host=0.0.0.0"
+            FLASK_ENV: development
+            DATABASE_URL: postgres://farmr:farmr@postgres/farmr
+            APP_SETTINGS: config.DevelopmentConfig
+            command: >
+                bash -c "flask db upgrade &&
+                        flask run --reload --host=0.0.0.0"
 
+volumes:
+    database-data:
     # bridge:
     #     build: ./bridge/
     #     container_name: bridge

@@ -2,7 +2,9 @@
 name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
-
+FLASK_ENV = "development"
+DATABASE_URL = "postgresql://farmr:farmr@postgres/farmr"
+APP_SETTINGS = "config.DevelopmentConfig"
 [dev-packages]
 
 [packages]
