@@ -1,54 +1,69 @@
+# version: '3'
+# services:
+#     mosquitto:
+#         image: eclipse-mosquitto:latest
+#         container_name: mqtt
+#         ports:
+#             - "1883:1883"
+#         restart: always
+
+#     postgres:
+#         image: "postgres:11-alpine"
+#         container_name: postgres
+#         restart: always
+#         ports:
+#             - "5432:5432"
+#         environment:
+#             POSTGRES_DB: farmr
+#             POSTGRES_USER: farmr
+#             POSTGRES_PASSWORD: farmr
+#         volumes:
+#             - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+
+#     adminer:
+#         image: adminer
+#         restart: always
+#         ports:
+#             - 8080:8080
+
+#     api:
+#         build: ./farmr-api/
+#         container_name: farmr-api
+#         volumes:
+#         - "./farmr-api:/app"
+#         depends_on:
+#         - postgres
+#         ports:
+#         - "5000:5000"
+#         environment:
+#             FLASK_ENV: development
+#             DATABASE_URL: postgres://farmr:farmr@postgres/farmr
+#             APP_SETTINGS: config.DevelopmentConfig
+#             command: >
+#                 bash -c "flask db upgrade &&
+#                         flask run --reload --host=0.0.0.0"
+
+# volumes:
+#     database-data:
 version: '3'
+
 services:
-    mosquitto:
-        image: eclipse-mosquitto:latest
-        container_name: mqtt
-        ports:
-            - "1883:1883"
-        restart: always
-
-    postgres:
-        image: "postgres:11-alpine"
-        container_name: postgres
-        restart: always
-        ports:
-            - "5432:5432"
-        environment:
-            POSTGRES_DB: farmr
-            POSTGRES_USER: farmr
-            POSTGRES_PASSWORD: farmr
-        volumes:
-            - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
-
-    adminer:
-        image: adminer
-        restart: always
-        ports:
-            - 8080:8080
-
-    api:
-        build: ./farmr-api/
-        container_name: farmr-api
-        volumes:
-        - "./farmr-api:/app"
-        depends_on:
-        - postgres
-        ports:
-        - "5000:5000"
-        environment:
-            FLASK_ENV: development
-            DATABASE_URL: postgres://farmr:farmr@postgres/farmr
-            APP_SETTINGS: config.DevelopmentConfig
-            command: >
-                bash -c "flask db upgrade &&
+  endpoint:
+    build: ./farmr-api
+    env_file: ./database.env
+    volumes:
+        - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+    ports:
+        - 5000:80
+    depends_on:
+       -  database
+    command: >
+                bash -c "flask db init && flask db upgrade &&
                         flask run --reload --host=0.0.0.0"
+  database:
+    image: postgres
+    restart: always
+    env_file: ./database.env
 
 volumes:
     database-data:
-    # bridge:
-    #     build: ./bridge/
-    #     container_name: bridge
-    #     depends_on:
-    #         - influxdb
-    #         - postgres
-    #     command: python bridge.py

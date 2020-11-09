@@ -16,6 +16,6 @@ WORKDIR /app
 COPY . /app/
 RUN pip install -r requirements.txt
 
-RUN addgroup -g 1001 farmr && adduser -G farmr -h /app -u 1001 -D farmr
+# RUN addgroup -g 1001 farmr && adduser -G farmr -h /app -u 1001 -D farmr
 
-USER farmr
+# USER farmr
