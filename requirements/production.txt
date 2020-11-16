@@ -2,4 +2,5 @@ Flask
 flask-sqlalchemy
 psycopg2
 flask-migrate
+flask-restx
 gunicorn

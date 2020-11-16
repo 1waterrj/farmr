@@ -58,9 +58,17 @@ class Zone(db.Model):
     )
 
 
+class InputType(db.Model):
+    __tablename__ = "input_types"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.now())
+
+
 class Input(db.Model):
     __tablename__ = "inputs"
     id = db.Column(db.Integer, primary_key=True)
+    input_type_id = db.Column(db.Integer, db.ForeignKey(InputType.id), nullable=False)
     name = db.Column(db.String)
     zone_id = db.Column(db.Integer, db.ForeignKey(Zone.id))
     fingerprint = db.Column(postgresql.UUID(as_uuid=True), nullable=False)
@@ -80,3 +88,17 @@ class MqttEvents(db.Model):
     input_id = db.Column(db.Integer, db.ForeignKey(Input.id))
     data_load = db.Column(db.JSON, nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
+
+
+class TimedEvents(db.Model):
+    __tablename__ = "timed_events"
+    id = db.Column(db.Integer, primary_key=True)
+    input_id = db.Column(db.Integer, db.ForeignKey(Input.id), nullable=False)
+    cron_job = db.Column(db.String, nullable=False)
+    message = db.Column(db.String)
+
+
+class TriggeredEvents(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    input_id = db.Column(db.Integer, db.ForeignKey(Input.id), nullable=False)
+    output_id = db.Column(db.Integer, db.ForeignKey(Input.id), nullable=False)
