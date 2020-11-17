@@ -4,3 +4,4 @@ psycopg2
 flask-migrate
 flask-restx
 gunicorn
+flask_cors
